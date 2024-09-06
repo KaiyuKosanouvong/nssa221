@@ -1,9 +1,12 @@
 #!:/usr/bin/python3
 # Kaiyu Kosanouvong / NSSA221 - Script 1
 # runs a command line interface that performs a variety of network functions
+
+# import os and netifaces
+# to get netifaces:
+# pip install netifaces
 import os
 import netifaces
-import subprocess
 
 # returns the default gateway of the system
 def defaultGate():
@@ -12,7 +15,7 @@ def defaultGate():
         # get gateway via netifaces
         gws = netifaces.gateways()
         def_GW = gws['default'][netifaces.AF_INET][0]
-    except: # 
+    except: # can also get gateway via os in case netifaces fails
         def_GW = os.popen("ip r |grep '^default' |awk '{print $3}'").read().strip("\n")
 
     return def_GW
@@ -22,7 +25,7 @@ def localConnect():
     # get local IP (default gateway)
     local_IP = defaultGate()
 
-    # get ping test results from 
+    # get ping test results
     pingtest = os.popen("ping -c 2 " + local_IP).read().strip("\n")
     return pingtest
     
@@ -32,7 +35,7 @@ def remoteConnect():
     # get remote IP (RIT server)
     remote_IP = "129.21.3.17"
 
-    # get ping test results from 
+    # get ping test results 
     pingtest = os.popen("ping -c 2 " + remote_IP).read().strip("\n")
     return pingtest
 
@@ -41,13 +44,15 @@ def dnsResolution():
     # get DNS IP (RIT server)
     DNS_IP = "8.8.8.8"
 
-    # get ping test results from 
+    # get ping test results 
     pingtest = os.popen("ping -c 2 " + DNS_IP).read().strip("\n")
     return pingtest
 
 # sets up a command line menu for the user
 def menu():
+    # while loop until user exits program
     while True:
+        # parse for user input
         userInput = input("Please enter a command: \n" +
                         "(1) to get default gateway\n" +
                         "(2) to test local connection\n" +
@@ -71,10 +76,13 @@ def menu():
         elif userInput == "5": # exits program
             print("bye!")
             exit()
-        else:
+        else: # invalid command case
             print("invalid command!\n")
 
 def main():
+    # clear terminal 
+    os.system("clear")
+    # run menu until exit is run
     menu()
 
 if __name__ == '__main__':
