@@ -4,7 +4,12 @@
 
 # returns the default gateway of the system
 def defaultGate():
-
+    try:
+        import netifaces
+        gws = netifaces.gateways()
+        DEFGW = hws['default'][netifaces.AF_INET][0]
+    except:
+        DEFGW = os.popen("ip r |grep '^default' |awk '{print $3}'").read().strip("\n")
 
 # tests the local connection and returns a boolean
 def localConnect():
