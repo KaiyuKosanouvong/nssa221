@@ -59,20 +59,32 @@ def main():
     # get hostname and domain via returnDevice()
     hostname, domain = returnDevice()
 
+    # get total and available ram via getRAM
+
     # run logistics
-    print("----- System Report -----\n"
+    print("----- System Report @ " + os.popen("date").read().strip() + " -----\n"
           + "Device Information:\n"
-          + "Hostname: " + hostname + "\n"
-          + "Domain: " + domain + "\n\n"
+          + "Hostname:              " + hostname + "\n"
+          + "Domain:                " + domain + "\n\n"
           + "Network Information:\n"
-          + "IPv4 Address: " + returnIP() + "\n"
-          + "Default Gateway: " + defaultGate() + "\n"
-          + "Network Mask: " + returnNetMask() + "\n"
-          + printDNS()
+          + "IPv4 Address:          " + returnIP() + "\n"
+          + "Default Gateway:       " + defaultGate() + "\n"
+          + "Network Mask:          " + returnNetMask() + "\n"
+        #   + printDNS()
           + "OS Information:\n"
-          + "Operating System: " + returnIP() + "\n"
-          + "Operating Version: " + returnIP() + "\n"
-          + "Kernel Version: " + returnIP() + "\n")
+          + "Operating System:      " + returnIP() + "\n"
+          + "Operating Version:     " + returnIP() + "\n"
+          + "Kernel Version:        " + returnIP() + "\n\n"
+          + "Storage Information:\n"
+          + "Hard Drive Capacity:   " + returnIP() + "\n"
+          + "Available Space:       " + returnIP() + "\n\n"
+          + "Processor Information:\n"
+          + "CPU Model:             " + returnIP() + "\n"
+          + "Number of Processors:  " + returnIP() + "\n"
+          + "Number of Cores:       " + returnIP() + "\n\n"
+          + "Memory Information:\n"
+          + "Total RAM:             " + returnIP() + "\n"
+          + "Available RAM:         " + returnIP() + "\n")
     
 if __name__ == '__main__':
     main()
