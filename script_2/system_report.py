@@ -51,6 +51,8 @@ def getStorage():
     os.popen("df").read().strip().split("\n")
 
 # PROCESSOR INFO
+def getCPU():
+    return os.popen("lscpu |grep '^Model name: ' |awk '{print $3} {print $4} {print $5} {print $6}'").read().strip()
 
 # MEMORY INFO
 def getRAM():
@@ -67,6 +69,9 @@ def main():
 
     # get total and available ram via getRAM
     totalRAM, availRAM = getRAM()
+
+    print(getCPU())
+    exit()
 
     # run logistics
     print("----- System Report @ " + os.popen("date").read().strip() + " -----\n"
