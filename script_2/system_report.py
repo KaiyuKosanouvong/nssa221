@@ -47,10 +47,16 @@ def printDNS():
 # OS INFO
 
 # STORAGE INFO
+def getStorage():
+    os.popen("df").read().strip().split("\n")
 
 # PROCESSOR INFO
 
 # MEMORY INFO
+def getRAM():
+    # run command to get memory values in gigabytes
+    return os.popen("free -g |grep '^Mem:' |awk '{print $2} {print $4}'").read().strip().split("\n")
+    
 
 def main():
     # clear terminal 
@@ -60,31 +66,37 @@ def main():
     hostname, domain = returnDevice()
 
     # get total and available ram via getRAM
+    totalRAM, availRAM = getRAM()
 
     # run logistics
     print("----- System Report @ " + os.popen("date").read().strip() + " -----\n"
           + "Device Information:\n"
           + "Hostname:              " + hostname + "\n"
           + "Domain:                " + domain + "\n\n"
+
           + "Network Information:\n"
           + "IPv4 Address:          " + returnIP() + "\n"
           + "Default Gateway:       " + defaultGate() + "\n"
           + "Network Mask:          " + returnNetMask() + "\n"
         #   + printDNS()
+
           + "OS Information:\n"
           + "Operating System:      " + returnIP() + "\n"
           + "Operating Version:     " + returnIP() + "\n"
           + "Kernel Version:        " + returnIP() + "\n\n"
+
           + "Storage Information:\n"
           + "Hard Drive Capacity:   " + returnIP() + "\n"
           + "Available Space:       " + returnIP() + "\n\n"
+
           + "Processor Information:\n"
           + "CPU Model:             " + returnIP() + "\n"
           + "Number of Processors:  " + returnIP() + "\n"
           + "Number of Cores:       " + returnIP() + "\n\n"
+
           + "Memory Information:\n"
-          + "Total RAM:             " + returnIP() + "\n"
-          + "Available RAM:         " + returnIP() + "\n")
+          + "Total RAM:             " + totalRAM + "GB\n"
+          + "Available RAM:         " + availRAM + "GB\n")
     
 if __name__ == '__main__':
     main()
