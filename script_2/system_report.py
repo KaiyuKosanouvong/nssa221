@@ -46,6 +46,7 @@ def printDNS():
     return None
 
 # OS INFO
+
 # retrieves operating system name, version, and kernel version
 def getOS():
     return (platform.system(), platform.version(), platform.release())
@@ -56,8 +57,19 @@ def getStorage():
     os.popen("df").read().strip().split("\n")
 
 # PROCESSOR INFO
-def getCPU():
-    return os.popen("lscpu |grep '^Model name: ' |awk '{print $3} {print $4} {print $5} {print $6}'").read().strip()
+
+# fetches cpu name from os
+def getCPUName():
+    # use lscpu to retrieve cpu name
+    return os.popen("lscpu |grep '^Model name: ' |awk '{print $3, $4, $5, $6}'").read().strip("\n")
+
+# gets the number of CPU processors and cores 
+def getProcsCores():
+    # use lscpu
+    cores = os.popen("lscpu |grep '^CPU(s):' |awk '{print $2}'").read().strip("\n")
+    procs = os.popen("lscpu |grep '^Socket(s):' |awk '{print $2}'").read().strip("\n")
+
+    return procs, cores
 
 # MEMORY INFO
 def getRAM():
@@ -77,6 +89,9 @@ def main():
 
     # get OS info
     op_system, op_version, kern_version = getOS()
+
+    # get number of processors and cores
+    procs, cores = getProcsCores()
 
     # run logistics
     print("----- System Report @ " + os.popen("date").read().strip() + " -----\n"
@@ -100,9 +115,9 @@ def main():
           + "Available Space:       " + returnIP() + "\n\n"
 
           + "Processor Information:\n"
-          + "CPU Model:             " + returnIP() + "\n"
-          + "Number of Processors:  " + returnIP() + "\n"
-          + "Number of Cores:       " + returnIP() + "\n\n"
+          + "CPU Model:             " + getCPUName() + "\n"
+          + "Number of Processors:  " + procs + "\n"
+          + "Number of Cores:       " + cores + "\n\n"
 
           + "Memory Information:\n"
           + "Total RAM:             " + totalRAM + "GB\n"
