@@ -2,11 +2,12 @@
 # Kaiyu Kosanouvong / NSSA221 - Script 2
 # runs a diagnostic on the host system covering various specifications
 
-# import os and netifaces
+# import os, netifaces, and platform modules
 # to get netifaces:
 # pip install netifaces
 import os
 import netifaces
+import platform
 
 # DEVICE INFO
 # returns the device information of the system: Hostname, Domain
@@ -45,6 +46,10 @@ def printDNS():
     return None
 
 # OS INFO
+# retrieves operating system name, version, and kernel version
+def getOS():
+    return (platform.system(), platform.version(), platform.release())
+
 
 # STORAGE INFO
 def getStorage():
@@ -70,8 +75,8 @@ def main():
     # get total and available ram via getRAM
     totalRAM, availRAM = getRAM()
 
-    print(getCPU())
-    exit()
+    # get OS info
+    op_system, op_version, kern_version = getOS()
 
     # run logistics
     print("----- System Report @ " + os.popen("date").read().strip() + " -----\n"
@@ -86,9 +91,9 @@ def main():
         #   + printDNS()
 
           + "OS Information:\n"
-          + "Operating System:      " + returnIP() + "\n"
-          + "Operating Version:     " + returnIP() + "\n"
-          + "Kernel Version:        " + returnIP() + "\n\n"
+          + "Operating System:      " + op_system + "\n"
+          + "Operating Version:     " + op_version + "\n"
+          + "Kernel Version:        " + kern_version + "\n\n"
 
           + "Storage Information:\n"
           + "Hard Drive Capacity:   " + returnIP() + "\n"
