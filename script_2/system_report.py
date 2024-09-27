@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# Kaiyu Kosanouvong / NSSA221 - Script 2
+# Kaiyu Kosanouvong / NSSA221 - Script 2 / September 27, 2024
 # runs a diagnostic on the host system covering various specifications
 
 # import os, netifaces, and platform modules
@@ -10,10 +10,15 @@ import netifaces
 import platform
 
 # DEVICE INFO
+
 # returns the device information of the system: Hostname, Domain
 def returnDevice():
-    return (os.popen("hostname").read().strip("\n").split("."))
+    # store hostname as variable
+    hostname = os.popen("hostname -s").read().strip("\n")
+    # get host domain
+    hostdomain = os.popen("hostname -f | sed -e 's/^"+hostname+"\.//'").read().strip("\n")
 
+    return (hostname, hostdomain)
 
 # NET INFO
 
@@ -26,7 +31,8 @@ def returnIP():
 
 # return network mask
 def returnNetMask():
-    netMask = os.popen("ip r |awk '{print $1}'").read().strip("\n").split("\n")[1]
+    # use netstat to get netmask via column formatting
+    netMask = os.popen("netstat -nr |grep '^'|awk '{print $3}'").read().strip().split("\n")[3]
     return netMask
 
 # returns the default gateway of the system
@@ -41,9 +47,22 @@ def defaultGate():
 
     return def_GW
 
-# prints DNS info of the system
-def printDNS():
-    return None
+# fetches DNS info from the system
+def getDNS():
+    # get servers from /etc/resolv.conf file
+    servers = os.popen("cat /etc/resolv.conf |grep '^nameserver' |awk '{print $2}'").read().strip().split('\n')
+
+    # for each server registered in system, add to string
+    counter = 0
+    serverString = ""
+    while (counter < servers.__len__()):
+        # add to string & increment counter
+        serverString += "DNS" + str(counter+1) + ":                  " + servers[counter] + "\n"
+        counter += 1
+    serverString += "\n"
+
+    # return servers in printable format
+    return serverString
 
 # OS INFO
 
@@ -53,8 +72,12 @@ def getOS():
 
 
 # STORAGE INFO
+
+# gets the total and available storage space in the /dev/mapper/rl-root drive
 def getStorage():
-    os.popen("df").read().strip().split("\n")
+    # use df with 
+    return os.popen("df -Ph / |grep -v ^File | awk '{print $2, $4}'").read().strip().split(" ")
+    
 
 # PROCESSOR INFO
 
@@ -84,15 +107,18 @@ def main():
     # get hostname and domain via returnDevice()
     hostname, domain = returnDevice()
 
-    # get total and available ram via getRAM
-    totalRAM, availRAM = getRAM()
+    # get storage info
+    totalDrive, availDrive = getStorage()
 
     # get OS info
     op_system, op_version, kern_version = getOS()
 
     # get number of processors and cores
     procs, cores = getProcsCores()
-
+    
+    # get total and available ram via getRAM
+    totalRAM, availRAM = getRAM()
+    
     # run logistics
     print("----- System Report @ " + os.popen("date").read().strip() + " -----\n"
           + "Device Information:\n"
@@ -103,7 +129,7 @@ def main():
           + "IPv4 Address:          " + returnIP() + "\n"
           + "Default Gateway:       " + defaultGate() + "\n"
           + "Network Mask:          " + returnNetMask() + "\n"
-        #   + printDNS()
+          + getDNS()
 
           + "OS Information:\n"
           + "Operating System:      " + op_system + "\n"
@@ -111,8 +137,8 @@ def main():
           + "Kernel Version:        " + kern_version + "\n\n"
 
           + "Storage Information:\n"
-          + "Hard Drive Capacity:   " + returnIP() + "\n"
-          + "Available Space:       " + returnIP() + "\n\n"
+          + "Hard Drive Capacity:   " + totalDrive + "\n"
+          + "Available Space:       " + availDrive + "\n\n"
 
           + "Processor Information:\n"
           + "CPU Model:             " + getCPUName() + "\n"
