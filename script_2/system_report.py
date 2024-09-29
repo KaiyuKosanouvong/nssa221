@@ -9,9 +9,11 @@ import os
 import netifaces
 import platform
 
+# store hostname to use in log file
+hostname = ""
 # DEVICE INFO
 
-# returns the device information of the system: Hostname, Domain
+# returns the device information of the system: hostname, Domain
 def returnDevice():
     # store hostname as variable
     hostname = os.popen("hostname -s").read().strip("\n")
@@ -68,7 +70,10 @@ def getDNS():
 
 # retrieves operating system name, version, and kernel version
 def getOS():
-    return (platform.system(), platform.version(), platform.release())
+    osName = os.popen("head /etc/os-release -n 2 |grep '^NAME=' |sed -e 's/^NAME=//'").read().strip()
+    osVers = os.popen("head /etc/os-release -n 2 |grep '^VERSION=' |sed -e 's/^VERSION=//'").read().strip()
+
+    return (osName, osVers, platform.release())
 
 
 # STORAGE INFO
@@ -118,36 +123,38 @@ def main():
     
     # get total and available ram via getRAM
     totalRAM, availRAM = getRAM()
-    
-    # run logistics
-    print("----- System Report @ " + os.popen("date").read().strip() + " -----\n"
-          + "Device Information:\n"
-          + "Hostname:              " + hostname + "\n"
-          + "Domain:                " + domain + "\n\n"
 
-          + "Network Information:\n"
-          + "IPv4 Address:          " + returnIP() + "\n"
-          + "Default Gateway:       " + defaultGate() + "\n"
-          + "Network Mask:          " + returnNetMask() + "\n"
+    # run logistics
+    report = ('System Report @ ' + os.popen('date').read().strip() + '\n'
+          + 'Device Information:\n'
+          + 'hostname:              ' + hostname + '\n'
+          + 'Domain:                ' + domain + '\n\n'
+
+          + 'Network Information:\n'
+          + 'IPv4 Address:          ' + returnIP() + '\n'
+          + 'Default Gateway:       ' + defaultGate() + '\n'
+          + 'Network Mask:          ' + returnNetMask() + '\n'
           + getDNS()
 
-          + "OS Information:\n"
-          + "Operating System:      " + op_system + "\n"
-          + "Operating Version:     " + op_version + "\n"
-          + "Kernel Version:        " + kern_version + "\n\n"
+          + 'OS Information:\n'
+          + 'Operating System:      ' + op_system + '\n'
+          + 'Operating Version:     ' + op_version + '\n'
+          + 'Kernel Version:        ' + kern_version + '\n\n'
 
-          + "Storage Information:\n"
-          + "Hard Drive Capacity:   " + totalDrive + "\n"
-          + "Available Space:       " + availDrive + "\n\n"
+          + 'Storage Information:\n'
+          + 'Hard Drive Capacity:   ' + totalDrive + '\n'
+          + 'Available Space:       ' + availDrive + '\n\n'
 
-          + "Processor Information:\n"
-          + "CPU Model:             " + getCPUName() + "\n"
-          + "Number of Processors:  " + procs + "\n"
-          + "Number of Cores:       " + cores + "\n\n"
+          + 'Processor Information:\n'
+          + 'CPU Model:             ' + getCPUName() + '\n'
+          + 'Number of Processors:  ' + procs + '\n'
+          + 'Number of Cores:       ' + cores + '\n\n'
 
-          + "Memory Information:\n"
-          + "Total RAM:             " + totalRAM + "GB\n"
-          + "Available RAM:         " + availRAM + "GB\n")
+          + 'Memory Information:\n'
+          + 'Total RAM:             ' + totalRAM + 'GB\n'
+          + 'Available RAM:         ' + availRAM + 'GB\n')
     
+    os.popen("printf '"+report+"' |tee /home/student/Scripts/SA2/"+hostname+"_system_report.log")
+
 if __name__ == '__main__':
     main()
