@@ -6,20 +6,27 @@
 import os
 import pathlib
 
-def createLink(start, dest):
+def createLink(start, link):
     # convert path to absolute file path
-    startPath = pathlib.Path.home().__str__
-    destPath = pathlib.Path.home().__str__
+    startPath = str
 
     # make link
-    os.symlink(startPath,destPath)
-    print("Link created from ", start, " to ", dest)
+    try:
+        # os.symlink(startPath,link)
+        print("Link created from", startPath, " to", link)
+    
+    except:
+        print("File Error:\nfilename not found: ")
 
-def deleteLink(start, dest):
+def deleteLink(link):
     # convert path to absolute file path
+    startPath = str
 
-    print("Link deleted from", start, " to", dest)
+    try:
+        print("Link deleted from", startPath, " to", link)
 
+    except:
+        print("File Error:\nsymbolic link not found:", link)
 
 def runReport():
     return 0
@@ -35,15 +42,14 @@ def commandList():
 
         if userInput == "1": # creates a link 
             # inputs will just be file names
-            start = input("Choose file 1: ")
-            dest = input("Choose file 2: ")
-            createLink(start,dest)
+            start = input("Choose file to access: ")
+            link = input("Choose file shortcut name: ")
+            createLink(start,link)
 
         elif userInput == "2": # deletes a link
             # inputs will just be file names
-            start = input("Choose file 1: ")
-            dest = input("Choose file 2: ")
-            deleteLink(start,dest)
+            link = input("Choose file shortcut name: ")
+            deleteLink(link)
 
         elif userInput == "3": # runs a report of links on the desktop
             print("running report...")
